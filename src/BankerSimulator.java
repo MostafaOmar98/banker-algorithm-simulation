@@ -13,7 +13,8 @@ public class BankerSimulator {
         System.out.print("What would you like to do?\n" +
                 "1- Enter new processes state\n" +
                 "2- Add request to current state\n" +
-                "0- Quit");
+                "0- Quit\n" +
+                "Choice: ");
     }
 
 
@@ -51,14 +52,14 @@ public class BankerSimulator {
     private void inputRequest()
     {
         Scanner sc = new Scanner(System.in);
-        System.out.println("Enter Process ID");
+        System.out.print("Enter Process ID: ");
         int pid = sc.nextInt();
         if (pid >= state.getNp())
         {
             deny();
             return;
         }
-        System.out.println("Enter number of requested resources: ");
+        System.out.print("Enter number of requested resources: ");
         int nRequested = sc.nextInt();
         if (nRequested > state.getNr())
         {
@@ -70,11 +71,15 @@ public class BankerSimulator {
         for (int i = 0; i < nRequested; ++i)
         {
             int rid, cnt;
-            System.out.println("Enter requested resource id: ");
+            System.out.print("Enter requested resource id: ");
             rid = sc.nextInt();
-            System.out.println("Enter requested count: ");
+            System.out.print("Enter requested count: ");
             cnt = sc.nextInt();
-            newState.allocate(pid, rid, cnt);
+            if (!newState.allocate(pid, rid, cnt))
+            {
+                deny();
+                return;
+            }
         }
         if (newState.isSafe())
         {
@@ -112,7 +117,7 @@ public class BankerSimulator {
         {
             for (int j = 0; j < nr; ++j)
             {
-                System.out.print("Maximum need of process " + i + "of resource " + j + ": ");
+                System.out.print("Maximum need of process " + i + " of resource " + j + ": ");
                 max[i][j] = sc.nextInt();
             }
         }
@@ -121,7 +126,7 @@ public class BankerSimulator {
         {
             for (int j = 0; j < nr; ++j)
             {
-                System.out.print("Currently allocated to process " + i + "of resource " + j + ": ");
+                System.out.print("Currently allocated to process " + i + " of resource " + j + ": ");
                 alloc[i][j] = sc.nextInt();
             }
         }

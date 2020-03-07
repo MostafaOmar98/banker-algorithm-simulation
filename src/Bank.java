@@ -26,7 +26,7 @@ public class Bank {
         }
         for (int j = 0; j < nr; ++j)
             this.available[j] = other.getAvailable()[j];
-        safe = other.getSafe();
+        safe = null;
     }
 
     public int[][] getMax() {
@@ -101,9 +101,15 @@ public class Bank {
         return true;
     }
 
-    public void allocate(int pid, int rid, int cnt)
+    public boolean allocate(int pid, int rid, int cnt)
     {
-
+        if (alloc[pid][rid] + cnt <= max[pid][rid] && cnt <= available[rid])
+        {
+            alloc[pid][rid] += cnt;
+            available[rid] -= cnt;
+            return true;
+        }
+        return false;
     }
 
 }
