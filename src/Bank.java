@@ -12,6 +12,47 @@ public class Bank {
         safe = null;
     }
 
+    public Bank(Bank other)
+    {
+        this.np = other.getNp();
+        this.nr = other.getNr();
+        for (int i = 0; i < np; ++i)
+        {
+            for (int j = 0; j < nr; ++j)
+            {
+                this.max[i][j] = other.getMax()[i][j];
+                this.alloc[i][j] = other.getAlloc()[i][j];
+            }
+        }
+        for (int j = 0; j < nr; ++j)
+            this.available[j] = other.getAvailable()[j];
+        safe = other.getSafe();
+    }
+
+    public int[][] getMax() {
+        return max;
+    }
+
+    public int[][] getAlloc() {
+        return alloc;
+    }
+
+    public int[] getAvailable() {
+        return available;
+    }
+
+    public Boolean getSafe() {
+        return safe;
+    }
+
+    public int getNp() {
+        return np;
+    }
+
+    public int getNr() {
+        return nr;
+    }
+
     public boolean isSafe()
     {
         if (safe != null)
@@ -59,8 +100,8 @@ public class Bank {
         }
         return true;
     }
-    
-    private void allocate(int pid, int rid, int cnt)
+
+    public void allocate(int pid, int rid, int cnt)
     {
 
     }
