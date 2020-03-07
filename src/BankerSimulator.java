@@ -1,7 +1,7 @@
 import java.util.Scanner;
 
 public class BankerSimulator {
-    ProcessesState state;
+    Bank state;
 
     BankerSimulator()
     {
