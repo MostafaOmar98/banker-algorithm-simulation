@@ -59,23 +59,14 @@ public class BankerSimulator {
             deny();
             return;
         }
-        System.out.print("Enter number of requested resources: ");
-        int nRequested = sc.nextInt();
-        if (nRequested > state.getNr())
-        {
-            deny();
-            return;
-        }
 
         Bank newState = new Bank(state);
-        for (int i = 0; i < nRequested; ++i)
+        for (int i = 0; i < state.getNr(); ++i)
         {
-            int rid, cnt;
-            System.out.print("Enter requested resource id: ");
-            rid = sc.nextInt();
-            System.out.print("Enter requested count: ");
+            int cnt;
+            System.out.print("Enter requested count of resource: " + i +": ");
             cnt = sc.nextInt();
-            if (!newState.allocate(pid, rid, cnt))
+            if (!newState.allocate(pid, i, cnt))
             {
                 deny();
                 return;
@@ -83,8 +74,8 @@ public class BankerSimulator {
         }
         if (newState.isSafe())
         {
-            accept();
             state = newState;
+            accept();
         }
         else
             deny();
@@ -95,6 +86,7 @@ public class BankerSimulator {
     {
         System.out.println("Request is granted\n" +
                 "System state has been updated\n");
+        state.print();
     }
 
     private void deny()
@@ -128,6 +120,11 @@ public class BankerSimulator {
             {
                 System.out.print("Currently allocated to process " + i + " of resource " + j + ": ");
                 alloc[i][j] = sc.nextInt();
+                if (alloc[i][j] > max[i][j])
+                {
+                    System.out.println("Can't allocate more than the maximum need");
+                    return;
+                }
             }
         }
 
@@ -143,6 +140,8 @@ public class BankerSimulator {
             System.out.println("This state is not safe!");
             state = null;
         }
+        else
+            state.print();
     }
 
 

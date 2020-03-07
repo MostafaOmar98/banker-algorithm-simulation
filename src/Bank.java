@@ -1,21 +1,33 @@
+import java.util.ArrayList;
+
 public class Bank {
     private int np, nr;
     private int[][] max, alloc;
     private int[] available;
-    Boolean safe;
+    int[][] need;
+    private ArrayList<Integer> safeSequence;
     public Bank(int np, int nr, int[][] max, int[][] alloc, int[] available) {
         this.np = np;
         this.nr = nr;
         this.max = max;
         this.alloc = alloc;
         this.available = available;
-        safe = null;
+        need = new int[np][nr];
+        for (int i = 0; i < np; ++i)
+        {
+            for (int j = 0; j < nr; ++j)
+                need[i][j] = max[i][j] - alloc[i][j];
+        }
+        safeSequence = null;
     }
 
     public Bank(Bank other)
     {
         this.np = other.getNp();
         this.nr = other.getNr();
+        max = new int[np][nr];
+        alloc = new int[np][nr];
+        available = new int[nr];
         for (int i = 0; i < np; ++i)
         {
             for (int j = 0; j < nr; ++j)
@@ -26,7 +38,13 @@ public class Bank {
         }
         for (int j = 0; j < nr; ++j)
             this.available[j] = other.getAvailable()[j];
-        safe = null;
+        need = new int[np][nr];
+        for (int i = 0; i < np; ++i)
+        {
+            for (int j = 0; j < nr; ++j)
+                need[i][j] = max[i][j] - alloc[i][j];
+        }
+        safeSequence = null;
     }
 
     public int[][] getMax() {
@@ -41,8 +59,8 @@ public class Bank {
         return available;
     }
 
-    public Boolean getSafe() {
-        return safe;
+    public ArrayList<Integer> getSafe() {
+        return safeSequence;
     }
 
     public int getNp() {
@@ -55,19 +73,15 @@ public class Bank {
 
     public boolean isSafe()
     {
-        if (safe != null)
-            return safe;
+        if (safeSequence != null)
+            return true;
 
         // initialization
-        int[] work = available;
+        int[] work = new int[nr];
+        for (int i = 0; i < nr; ++i)
+            work[i] = available[i];
         boolean[] finished = new boolean[np]; // inited to false
-        int[][] need = new int[np][nr];
-        for (int i = 0; i < np; ++i)
-        {
-            for (int j = 0; j < nr; ++j)
-                need[i][j] = max[i][j] - alloc[i][j];
-        }
-        safe = true;
+        safeSequence = new ArrayList<Integer>();
 
         for (int it = 0; it < np; ++it)
         {
@@ -81,14 +95,17 @@ public class Bank {
             }
             if (picked == -1)
             {
-                safe = false;
+                safeSequence = null;
                 break;
             }
             for (int j = 0; j < nr; ++j)
                 work[j] += alloc[picked][j];
             finished[picked] = true;
+            safeSequence.add(picked);
         }
-        return safe;
+        if (safeSequence != null)
+            return true;
+        return false;
     }
 
     boolean canSatisfy(int[] need, int[] work)
@@ -107,9 +124,45 @@ public class Bank {
         {
             alloc[pid][rid] += cnt;
             available[rid] -= cnt;
+            need[pid][rid] -= cnt;
             return true;
         }
         return false;
     }
 
+    private void showSafeSequence()
+    {
+        System.out.println("Safe Sequnce: ");
+        for (int i = 0; i < np ;++i)
+        {
+            System.out.print("P" + safeSequence.get(i) + "  ");
+        }
+        System.out.println();
+    }
+
+    public void print()
+    {
+        System.out.println("Allocation Matrix: ");
+        printMatrix(alloc);
+        System.out.println("Need Matrix: ");
+        printMatrix(need);
+        System.out.println("Max matrix: ");
+        printMatrix(max);
+        System.out.print("Available: ");
+        for (int i = 0; i < available.length; ++i)
+            System.out.print(available[i] + " ");
+        System.out.println();
+        showSafeSequence();
+    }
+
+    private void printMatrix(int[][] mat)
+    {
+        for (int i = 0; i < mat.length; ++i)
+        {
+            System.out.print("P" + i + ": ");
+            for (int j = 0; j < mat[i].length; ++j)
+                System.out.print(mat[i][j] + " ");
+            System.out.println();
+        }
+    }
 }
