@@ -13,6 +13,7 @@ public class BankerSimulator {
         System.out.print("What would you like to do?\n" +
                 "1- Enter new processes state\n" +
                 "2- Add request to current state\n" +
+                "3- Print state info\n" +
                 "0- Quit\n" +
                 "Choice: ");
     }
@@ -38,6 +39,12 @@ public class BankerSimulator {
                     break;
                 case 2:
                     inputRequest();
+                    break;
+                case 3:
+                    if (state != null)
+                        state.print();
+                    else
+                        System.out.println("Enter an initial state first");
                     break;
                 case 0:
                     done = true;
@@ -86,7 +93,6 @@ public class BankerSimulator {
     {
         System.out.println("Request is granted\n" +
                 "System state has been updated\n");
-        state.print();
     }
 
     private void deny()
@@ -140,8 +146,6 @@ public class BankerSimulator {
             System.out.println("This state is not safe!");
             state = null;
         }
-        else
-            state.print();
     }
 
 
